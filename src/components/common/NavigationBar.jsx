@@ -1,45 +1,65 @@
-// src/components/common/NavigationBar.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { HomeIcon, BookOpenIcon, PuzzleIcon, UserIcon } from 'lucide-react';
+import './NavigationBar.css';
 
-const NavigationBar = ({ activePage, setActivePage }) => {
+const NavigationBar = () => {
+  const location = useLocation();
+  
+  // Navigation items with emojis (would be replaced with proper SVG icons)
   const navItems = [
-    { icon: <HomeIcon />, label: 'Home', path: '/' },
-    { icon: <BookOpenIcon />, label: 'Learn', path: '/learn' },
-    { icon: <PuzzleIcon />, label: 'Quiz', path: '/quiz' },
-    { icon: <UserIcon />, label: 'Profile', path: '/profile' }
+    {
+      name: 'Home',
+      icon: '🏠',
+      path: '/',
+    },
+    {
+      name: 'Learn',
+      icon: '📚',
+      path: '/learn',
+    },
+    {
+      name: 'Quiz',
+      icon: '❓',
+      path: '/quiz',
+    },
+    {
+      name: 'Profile',
+      icon: '👤',
+      path: '/profile',
+    },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-lg">
-      <div className="flex justify-around items-center h-16 max-w-3xl mx-auto">
-        {navItems.map((item) => (
-          <Link
-            key={item.label}
-            to={item.path}
-            className="flex flex-col items-center"
-            onClick={() => setActivePage(item.label.toLowerCase())}
+    <nav className="navigation-bar">
+      {navItems.map((item) => {
+        const isActive = location.pathname === item.path;
+        
+        return (
+          <Link 
+            to={item.path} 
+            key={item.name}
+            className="nav-item-link"
           >
             <motion.div
-              className={`p-2 rounded-full ${activePage === item.label.toLowerCase() ? 'bg-blue-100' : ''}`}
+              className={`nav-item ${isActive ? 'active' : ''}`}
               whileHover={{ y: -5 }}
               whileTap={{ scale: 0.9 }}
             >
-              <div className="text-2xl" style={{ color: activePage === item.label.toLowerCase() ? '#54A0FF' : '#999' }}>
-                {item.icon}
-              </div>
+              <div className="nav-icon">{item.icon}</div>
+              <div className="nav-name">{item.name}</div>
+              
+              {isActive && (
+                <motion.div 
+                  className="active-indicator"
+                  layoutId="activeIndicator"
+                  transition={{ type: "spring", duration: 0.6 }}
+                />
+              )}
             </motion.div>
-            <span 
-              className="text-xs font-comic mt-1"
-              style={{ color: activePage === item.label.toLowerCase() ? '#54A0FF' : '#999' }}
-            >
-              {item.label}
-            </span>
           </Link>
-        ))}
-      </div>
+        );
+      })}
     </nav>
   );
 };

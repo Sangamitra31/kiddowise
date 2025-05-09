@@ -1,185 +1,150 @@
-// src/pages/HomePage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import SubjectCard from '../components/home/SubjectCard';
-import AgeFilter from '../components/home/AgeFilter';
-import RecentActivities from '../components/home/RecentActivities';
-import DailyStreak from '../components/home/DailyStreak';
-import ChatInterface from '../components/chatbot/ChatInterface';
-import { subjects, userData } from '../data/staticData';
+import './HomePage.css';
 
-const HomePage = ({ setActivePage }) => {
-  const [filteredSubjects, setFilteredSubjects] = useState(subjects);
-  const [ageFilter, setAgeFilter] = useState('All Ages');
+const HomePage = () => {
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState('all');
   const [showChatbot, setShowChatbot] = useState(false);
-
-  useEffect(() => {
-    setActivePage('home');
-  }, [setActivePage]);
-
-  useEffect(() => {
-    if (ageFilter === 'All Ages') {
-      setFilteredSubjects(subjects);
-    } else {
-      setFilteredSubjects(
-        subjects.filter(subject => subject.ageGroups.includes(ageFilter))
-      );
-    }
-  }, [ageFilter]);
-
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.5,
-        staggerChildren: 0.1
-      }
-    },
-    exit: { 
-      opacity: 0,
-      y: -20,
-      transition: { duration: 0.3 }
-    }
-  };
-
-  const itemVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
-  };
+  
+  // Mock data for subjects
+  const subjects = [
+    { id: 1, name: 'Math', icon: '🔢', color: '#58cc02', progress: 65 },
+    { id: 2, name: 'Science', icon: '🔬', color: '#ce82ff', progress: 40 },
+    { id: 3, name: 'English', icon: '📚', color: '#fa6400', progress: 75 },
+    { id: 4, name: 'Art', icon: '🎨', color: '#1cb0f6', progress: 30 },
+    { id: 5, name: 'Music', icon: '🎵', color: '#ff9600', progress: 20 },
+    { id: 6, name: 'History', icon: '🏛️', color: '#ff4b4b', progress: 15 },
+  ];
+  
+  // Mock data for recent activities
+  const recentActivities = [
+    { id: 1, title: 'Completed Animal Quiz', subject: 'Science', icon: '🔬', score: '8/10' },
+    { id: 2, title: 'Learned Addition', subject: 'Math', icon: '🔢' },
+    { id: 3, title: 'Read Story: "The Big Tree"', subject: 'English', icon: '📚' },
+  ];
 
   return (
-    <motion.div
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
-      className="pb-16"
-    >
-      {/* Header Section */}
-      <motion.div variants={itemVariants} className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-comic text-gray-800">
-            Hi, {userData.name}! 👋
-          </h1>
-          <p className="text-sm text-gray-600">
-            Ready to learn something new today?
-          </p>
+    <div className="homepage-container">
+      {/* Header with streak */}
+      <header className="homepage-header">
+        <div className="welcome-message">
+          <h1>Hello, Explorer!</h1>
+          <p>Continue your learning adventure</p>
         </div>
-        
-        <div className="flex items-center">
-          <div className="bg-blue-100 rounded-lg px-3 py-1 mr-2">
-            <span className="text-blue-800 font-bold text-sm">{userData.points} pts</span>
-          </div>
-          <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-            {userData.level}
-          </div>
+        <div className="streak-container">
+          <div className="streak-icon">🔥</div>
+          <div className="streak-count">5</div>
         </div>
-      </motion.div>
+      </header>
       
-      {/* Daily Streak */}
-      <motion.div variants={itemVariants}>
-        <DailyStreak 
-          currentStreak={userData.streak.current} 
-          longestStreak={userData.streak.longest} 
-        />
-      </motion.div>
-      
-      {/* Subject Filters */}
-      <motion.div variants={itemVariants} className="mt-6">
-        <h2 className="text-xl font-comic text-gray-800 mb-4">Learning Subjects</h2>
-        <AgeFilter 
-          activeFilter={ageFilter} 
-          onFilterChange={setAgeFilter} 
-        />
-      </motion.div>
-      
-      {/* Subject Grid */}
-      <motion.div 
-        variants={itemVariants}
-        className="grid grid-cols-2 gap-4"
-      >
-        {filteredSubjects.map(subject => (
-          <SubjectCard key={subject.id} subject={subject} />
-        ))}
-      </motion.div>
-      
-      {/* Recent Activities */}
-      <motion.div variants={itemVariants}>
-        <RecentActivities userActivities={userData.recentActivities} />
-      </motion.div>
-      
-      {/* Chat Button */}
-      <motion.div 
-        className="fixed bottom-20 right-4 z-10"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 1, type: 'spring' }}
-      >
-        <motion.button
-          className="w-14 h-14 bg-blue-500 rounded-full shadow-lg flex items-center justify-center"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setShowChatbot(prev => !prev)}
+      {/* Age filter */}
+      <div className="age-filter">
+        <button 
+          className={selectedAgeGroup === 'all' ? 'active' : ''} 
+          onClick={() => setSelectedAgeGroup('all')}
         >
-          <svg 
-            className="w-8 h-8 text-white" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth="2" 
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" 
-            />
-          </svg>
-        </motion.button>
-      </motion.div>
+          All Ages
+        </button>
+        <button 
+          className={selectedAgeGroup === '4-6' ? 'active' : ''} 
+          onClick={() => setSelectedAgeGroup('4-6')}
+        >
+          Ages 4-6
+        </button>
+        <button 
+          className={selectedAgeGroup === '7-10' ? 'active' : ''} 
+          onClick={() => setSelectedAgeGroup('7-10')}
+        >
+          Ages 7-10
+        </button>
+      </div>
       
-      {/* Chatbot Modal */}
+      {/* Subjects grid */}
+      <section className="subjects-section">
+        <h2>Choose a Subject</h2>
+        <div className="subjects-grid">
+          {subjects.map(subject => (
+            <motion.div 
+              key={subject.id}
+              className="subject-card"
+              style={{ backgroundColor: subject.color }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="subject-icon">{subject.icon}</div>
+              <div className="subject-info">
+                <h3>{subject.name}</h3>
+                <div className="progress-container">
+                  <div 
+                    className="progress-bar" 
+                    style={{ width: `${subject.progress}%` }}
+                  ></div>
+                </div>
+                <span className="progress-text">{subject.progress}%</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Recent activities */}
+      <section className="activities-section">
+        <h2>Recent Activities</h2>
+        <div className="activities-list">
+          {recentActivities.map(activity => (
+            <motion.div 
+              key={activity.id}
+              className="activity-card"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="activity-icon">{activity.icon}</div>
+              <div className="activity-info">
+                <h3>{activity.title}</h3>
+                <p>{activity.subject}</p>
+              </div>
+              {activity.score && (
+                <div className="activity-score">{activity.score}</div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Chat bot fab button */}
+      <motion.button 
+        className="chat-fab"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowChatbot(!showChatbot)}
+      >
+        <span className="robot-icon">🤖</span>
+      </motion.button>
+
+      {/* Simple chat modal (would be expanded in a real implementation) */}
       {showChatbot && (
-        <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="bg-white rounded-xl overflow-hidden w-full max-w-lg"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', damping: 20 }}
-          >
-            <div className="flex justify-end p-2">
-              <button 
-                className="p-1 rounded-full hover:bg-gray-200"
-                onClick={() => setShowChatbot(false)}
-              >
-                <svg 
-                  className="w-6 h-6" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth="2" 
-                    d="M6 18L18 6M6 6l12 12" 
-                  />
-                </svg>
-              </button>
+        <div className="chat-modal">
+          <div className="chat-header">
+            <h3>EduBot</h3>
+            <button onClick={() => setShowChatbot(false)}>✕</button>
+          </div>
+          <div className="chat-messages">
+            <div className="bot-message">
+              <div className="bot-avatar">🤖</div>
+              <div className="message-bubble">
+                Hi there! I'm EduBot. How can I help you learn today?
+              </div>
             </div>
-            
-            <ChatInterface />
-          </motion.div>
-        </motion.div>
+          </div>
+          <div className="chat-input">
+            <button className="voice-input">🎤</button>
+            <input type="text" placeholder="Type your question here..." />
+            <button className="send-button">📤</button>
+          </div>
+        </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 

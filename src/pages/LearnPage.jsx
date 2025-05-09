@@ -1,204 +1,299 @@
-// src/pages/LearnPage.jsx
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import { subjects, activities } from '../data/staticData';
-import { BookOpen, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import './LearnPage.css';
 
-const LearnPage = ({ setActivePage }) => {
-  const location = useLocation();
+const LearnPage = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
-  const [filteredActivities, setFilteredActivities] = useState([]);
-  
-  useEffect(() => {
-    setActivePage('learn');
-    
-    // Check if a subject was selected from the home page
-    if (location.state?.selectedSubject) {
-      const subject = subjects.find(s => s.id === location.state.selectedSubject);
-      if (subject) {
-        setSelectedSubject(subject);
-      }
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState('4-6');
+  const [activeTab, setActiveTab] = useState('flashcards');
+
+  // Mock subjects data
+  const subjects = [
+    { id: 1, name: 'Math', icon: '🔢', color: '#58cc02' },
+    { id: 2, name: 'Science', icon: '🔬', color: '#ce82ff' },
+    { id: 3, name: 'English', icon: '📚', color: '#fa6400' },
+    { id: 4, name: 'Art', icon: '🎨', color: '#1cb0f6' },
+    { id: 5, name: 'Music', icon: '🎵', color: '#ff9600' },
+  ];
+
+  // Mock flashcards data
+  const flashcards = [
+    {
+      id: 1,
+      subject: 'Math',
+      title: 'Addition',
+      ageGroup: '4-6',
+      cards: [
+        { id: 1, front: '1 + 1 = ?', back: '2', image: '📊' },
+        { id: 2, front: '2 + 2 = ?', back: '4', image: '📊' },
+        { id: 3, front: '3 + 2 = ?', back: '5', image: '📊' },
+      ]
+    },
+    {
+      id: 2,
+      subject: 'Science',
+      title: 'Animals',
+      ageGroup: '4-6',
+      cards: [
+        { id: 1, front: 'Which animal has a long neck?', back: 'Giraffe', image: '🦒' },
+        { id: 2, front: 'Which animal says "Moo"?', back: 'Cow', image: '🐄' },
+        { id: 3, front: 'Which animal has a trunk?', back: 'Elephant', image: '🐘' },
+      ]
+    },
+    {
+      id: 3,
+      subject: 'English',
+      title: 'Alphabet',
+      ageGroup: '4-6',
+      cards: [
+        { id: 1, front: 'A is for...', back: 'Apple', image: '🍎' },
+        { id: 2, front: 'B is for...', back: 'Ball', image: '⚽' },
+        { id: 3, front: 'C is for...', back: 'Cat', image: '🐱' },
+      ]
     }
-  }, [location, setActivePage]);
-  
-  useEffect(() => {
-    if (selectedSubject) {
-      const subjectActivities = activities.filter(
-        activity => activity.subjectId === selectedSubject.id
-      );
-      setFilteredActivities(subjectActivities);
-    } else {
-      setFilteredActivities(activities);
+  ];
+
+  // Mock lessons data
+  const lessons = [
+    {
+      id: 1,
+      subject: 'Math',
+      title: 'Counting',
+      ageGroup: '4-6',
+      duration: '10 mins',
+      description: 'Learn to count from 1 to 10 with fun examples!',
+      image: '🔢'
+    },
+    {
+      id: 2,
+      subject: 'Science',
+      title: 'Animals',
+      ageGroup: '4-6',
+      duration: '15 mins',
+      description: 'Discover different animals and the sounds they make!',
+      image: '🦁'
+    },
+    {
+      id: 3,
+      subject: 'English',
+      title: 'Letters',
+      ageGroup: '4-6',
+      duration: '12 mins',
+      description: 'Learn the first 5 letters of the alphabet!',
+      image: '📝'
     }
-  }, [selectedSubject]);
-  
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { 
-      opacity: 1, 
-      y: 0,
+  ];
+
+  // Filter content based on selected subject and age group
+  const filteredFlashcards = flashcards.filter(
+    card => (!selectedSubject || card.subject === selectedSubject) && card.ageGroup === selectedAgeGroup
+  );
+
+  const filteredLessons = lessons.filter(
+    lesson => (!selectedSubject || lesson.subject === selectedSubject) && lesson.ageGroup === selectedAgeGroup
+  );
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
       transition: {
-        duration: 0.5,
+        when: "beforeChildren",
         staggerChildren: 0.1
       }
     },
-    exit: { 
-      opacity: 0,
-      y: -20,
-      transition: { duration: 0.3 }
-    }
+    exit: { opacity: 0 }
   };
-  
+
   const itemVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    }
   };
 
   return (
-    <motion.div
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
-      className="pb-16"
-    >
-      {/* Header */}
-      <motion.div variants={itemVariants} className="mb-6">
-        <h1 className="text-2xl font-comic text-gray-800">
-          {selectedSubject ? `Learn ${selectedSubject.name}` : 'Learn'}
-        </h1>
-        <p className="text-sm text-gray-600">
-          {selectedSubject 
-            ? selectedSubject.description 
-            : 'Choose an activity to start learning!'}
-        </p>
-      </motion.div>
-      
-      {/* Subject Selection (if no subject is selected) */}
-      {!selectedSubject && (
-        <motion.div variants={itemVariants} className="mb-6">
-          <h2 className="text-lg font-comic text-gray-800 mb-3">Choose a Subject</h2>
-          <div className="flex overflow-x-auto pb-2 space-x-3">
-            {subjects.map(subject => (
-              <motion.div
-                key={subject.id}
-                className="flex-shrink-0 w-32 rounded-lg p-3 cursor-pointer"
-                style={{ backgroundColor: subject.color }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setSelectedSubject(subject)}
-              >
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-2">
-                  <img 
-                    src={`/assets/images/subjects/${subject.icon}`} 
-                    alt={subject.name} 
-                    className="w-8 h-8"
-                  />
-                </div>
-                <p className="text-white text-center font-comic text-sm">
-                  {subject.name}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-      
-      {/* Activities List */}
-      <motion.div variants={itemVariants}>
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-lg font-comic text-gray-800">Activities</h2>
-          
-          {selectedSubject && (
-            <Button 
-              onClick={() => setSelectedSubject(null)}
-              size="small"
-              color="#54A0FF"
-              className="text-white"
-            >
-              All Subjects
-            </Button>
-          )}
-        </div>
-        
-        <div className="space-y-4">
-          {filteredActivities.map(activity => (
-            <motion.div
-              key={activity.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden"
-              whileHover={{ y: -3, boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }}
-            >
-              <div className="p-4">
-                <div className="flex items-start">
-                  <div 
-                    className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center mr-3"
-                    style={{ 
-                      backgroundColor: subjects.find(s => s.id === activity.subjectId)?.color || '#54A0FF'
-                    }}
+    <div className="learn-page">
+      <header className="learn-header">
+        <h1>Learn & Explore</h1>
+        <div className="robot-mascot">🤖</div>
+      </header>
+
+      {/* Age group selector */}
+      <div className="age-selector">
+        <button 
+          className={selectedAgeGroup === '4-6' ? 'active' : ''} 
+          onClick={() => setSelectedAgeGroup('4-6')}
+        >
+          Ages 4-6
+        </button>
+        <button 
+          className={selectedAgeGroup === '7-10' ? 'active' : ''} 
+          onClick={() => setSelectedAgeGroup('7-10')}
+        >
+          Ages 7-10
+        </button>
+      </div>
+
+      {/* Subject filters */}
+      <section className="subject-filters">
+        <motion.button 
+          className={!selectedSubject ? 'active' : ''}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setSelectedSubject(null)}
+        >
+          All
+        </motion.button>
+        {subjects.map(subject => (
+          <motion.button 
+            key={subject.id}
+            className={selectedSubject === subject.name ? 'active' : ''}
+            style={{ 
+              backgroundColor: selectedSubject === subject.name ? subject.color : 'white',
+              color: selectedSubject === subject.name ? 'white' : '#333'
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setSelectedSubject(subject.name)}
+          >
+            <span>{subject.icon}</span>
+            {subject.name}
+          </motion.button>
+        ))}
+      </section>
+
+      {/* Content tabs */}
+      <div className="content-tabs">
+        <button 
+          className={activeTab === 'flashcards' ? 'active' : ''}
+          onClick={() => setActiveTab('flashcards')}
+        >
+          Flashcards
+        </button>
+        <button 
+          className={activeTab === 'lessons' ? 'active' : ''}
+          onClick={() => setActiveTab('lessons')}
+        >
+          Lessons
+        </button>
+      </div>
+
+      {/* Content area */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'flashcards' ? (
+          <motion.section 
+            key="flashcards"
+            className="flashcards-container"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <h2>Flashcards</h2>
+            <div className="flashcards-grid">
+              {filteredFlashcards.length > 0 ? (
+                filteredFlashcards.map(flashcard => (
+                  <motion.div 
+                    key={flashcard.id}
+                    className="flashcard-set"
+                    variants={itemVariants}
                   >
-                    <img 
-                      src={`/assets/images/activities/${activity.icon}`} 
-                      alt={activity.name} 
-                      className="w-8 h-8"
-                    />
-                  </div>
-                  
-                  <div className="flex-grow">
-                    <h3 className="font-comic text-gray-800">{activity.name}</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {activity.description}
-                    </p>
-                    
-                    <div className="flex justify-between items-center mt-3">
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
-                          {activity.ageGroup}
-                        </span>
-                        <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full flex items-center">
-                          <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 6v6l4 2" />
-                          </svg>
-                          {activity.duration}
-                        </span>
-                      </div>
-                      
-                      <span className="text-yellow-600 text-xs font-bold">
-                        {activity.points} pts
-                      </span>
+                    <div className="flashcard-header">
+                      <span className="flashcard-icon">{flashcard.cards[0].image}</span>
+                      <h3>{flashcard.title}</h3>
                     </div>
-                  </div>
-                </div>
-                
-                <div className="flex justify-between mt-4">
-                  <Button
-                    size="small"
-                    color="#E5E7EB"
-                    className="text-gray-700"
-                    icon={<BookOpen size={16} />}
+                    <p>{flashcard.cards.length} cards</p>
+                    <div className="flashcard-subject">{flashcard.subject}</div>
+                    <motion.button 
+                      className="practice-button"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Practice Now
+                    </motion.button>
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div className="no-content" variants={itemVariants}>
+                  <div className="no-content-icon">📝</div>
+                  <p>No flashcards available for this selection. Try another subject or age group!</p>
+                </motion.div>
+              )}
+            </div>
+          </motion.section>
+        ) : (
+          <motion.section 
+            key="lessons"
+            className="lessons-container"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <h2>Lessons</h2>
+            <div className="lessons-grid">
+              {filteredLessons.length > 0 ? (
+                filteredLessons.map(lesson => (
+                  <motion.div 
+                    key={lesson.id}
+                    className="lesson-card"
+                    variants={itemVariants}
                   >
-                    Preview
-                  </Button>
-                  
-                  <Button
-                    size="small"
-                    color="#54A0FF"
-                    className="text-white"
-                    icon={<Award size={16} />}
-                  >
-                    Start Activity
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                    <div className="lesson-image">{lesson.image}</div>
+                    <div className="lesson-content">
+                      <h3>{lesson.title}</h3>
+                      <div className="lesson-meta">
+                        <span className="lesson-subject">{lesson.subject}</span>
+                        <span className="lesson-duration">{lesson.duration}</span>
+                      </div>
+                      <p>{lesson.description}</p>
+                      <motion.button 
+                        className="start-lesson-button"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Start Lesson
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div className="no-content" variants={itemVariants}>
+                  <div className="no-content-icon">🔍</div>
+                  <p>No lessons available for this selection. Try another subject or age group!</p>
+                </motion.div>
+              )}
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
+      {/* Learning progress */}
+      <section className="learning-progress">
+        <h2>Your Progress</h2>
+        <div className="progress-stats">
+          <div className="progress-stat">
+            <div className="progress-icon">⭐</div>
+            <div className="progress-value">42</div>
+            <div className="progress-label">Stars Earned</div>
+          </div>
+          <div className="progress-stat">
+            <div className="progress-icon">📚</div>
+            <div className="progress-value">7</div>
+            <div className="progress-label">Lessons Completed</div>
+          </div>
+          <div className="progress-stat">
+            <div className="progress-icon">📝</div>
+            <div className="progress-value">12</div>
+            <div className="progress-label">Flashcards Mastered</div>
+          </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </section>
+    </div>
   );
 };
 

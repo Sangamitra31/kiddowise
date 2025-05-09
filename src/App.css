@@ -1,38 +1,160 @@
-.App {
-  text-align: center;
+/* App.css - Main styling for EduBot Learning Solutions */
+
+/* Import Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Base styling */
+:root {
+  /* Color palette - bright and kid-friendly */
+  --primary: #FF6B6B;
+  --secondary: #4ECDC4;
+  --accent1: #FFD166;
+  --accent2: #6A67CE;
+  --accent3: #4CB944;
+  --light: #FFFFFF;
+  --dark: #2C3E50;
+  --background: #F9F7F7;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background);
+  color: var(--dark);
+  overflow-x: hidden;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app-container {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 70px 16px; /* Added bottom padding for navigation bar */
+  position: relative;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: var(--primary);
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: var(--accent2);
+}
+
+p {
+  line-height: 1.6;
+}
+
+/* Buttons */
+button {
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Home Page Styling */
+.home-page {
+  padding: 24px 0;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  margin-bottom: 24px;
+}
+
+.welcome-container h1 {
+  color: var(--accent2);
+}
+
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.age-filter-container {
+  margin: 24px 0;
+}
+
+.recent-activities {
+  margin: 32px 0;
+}
+
+/* Chat FAB Button */
+.chat-fab {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--accent2);
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  z-index: 10;
 }
 
-.App-link {
-  color: #61dafb;
+.chat-fab img {
+  width: 32px;
+  height: 32px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Responsive styling */
+@media (min-width: 768px) {
+  .app-container {
+    padding: 0 32px 70px 32px;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .subjects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .home-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .welcome-container {
+    margin-bottom: 16px;
   }
 }
