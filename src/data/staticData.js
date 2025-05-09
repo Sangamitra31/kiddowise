@@ -133,3 +133,22 @@ export const subjects = [
     ],
     // More user data would be here
   };
+
+  export const achievements = [
+    {
+      id: 1,
+      title: 'First Quiz Completed',
+      description: 'You completed your first quiz!',
+      icon: 'trophy_1.svg',
+      points: 50,
+    },
+    {
+      id: 2,
+      title: 'Activity Explorer',
+      description: 'Completed 5 different activities!',
+      icon: 'medal_1.svg',
+      points: 100,
+    },
+    // Add more as needed
+  ];
+  

@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Flame } from 'lucide-react';
+import FireIcon from '@heroicons/react/24/solid/FireIcon';
 
 const DailyStreak = ({ currentStreak, longestStreak }) => {
   const fireVariants = {

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ProgressBar from '../components/common/ProgressBar';
 import { userData, achievements, subjects } from '../data/staticData';
 import { Flame, Lock, Unlock, BarChart2, Settings, Star, Trophy } from 'lucide-react';
+import { FireIcon } from '@heroicons/react/solid'; // or '@heroicons/react/24/solid' depending on version
 
 const ProfilePage = ({ setActivePage }) => {
   useEffect(() => {
